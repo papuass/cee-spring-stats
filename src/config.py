@@ -24,3 +24,17 @@ OUTPUT_FILE = f"output/cee_spring_{CONTEST_YEAR}_results.txt"
 CACHE_FILE = f"cache/cee_spring_{CONTEST_YEAR}_cache.json"
 
 # No limits on topics and countries - parse and display all
+
+# Contest countries configuration
+# Only these countries are counted in contest categories
+ALLOWED_CONTEST_COUNTRIES = [
+    "Albānija", "Armēnija", "aromūni", "Austrija", "Azerbaidžāna",
+    "Baltkrievija", "Baškortostāna", "Bosnija un Hercegovina", "Bulgārija",
+    "Čehija", "čigāni", "Čuvašija", "erzji", "esperanto", "Grieķija",
+    "Gruzija", "Horvātija", "Igaunija", "karaīmi", "Kazahstāna", "Kipra",
+    "Kosova", "Krievija", "Krievijas ziemeļrietumu reģions", "Krimas tatāri",
+    "krimčaki", "Lietuva", "Malta", "Melnkalne", "Polija",
+    "rietumarmēņu valoda", "Rumānija un Moldova", "Serbija", "Serbu Republika",
+    "Slovākija", "Slovēnija", "sorbi", "starptautiski", "tatāri", "Turcija",
+    "Ukraina", "Ungārija", "veru valoda", "Ziemeļmaķedonija"
+]

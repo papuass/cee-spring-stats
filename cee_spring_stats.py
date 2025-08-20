@@ -11,7 +11,7 @@ from src.template_parser import TemplateParser
 from src.report_generator import ReportGenerator
 from src.data_validator import DataValidator
 from src.suggested_articles import SuggestedArticlesCollector
-from src.config import CONTEST_TEMPLATE, CACHE_FILE, OUTPUT_FILE
+from src.config import CONTEST_TEMPLATE, CACHE_FILE, OUTPUT_FILE, ALLOWED_CONTEST_COUNTRIES
 
 
 class CEESpringStats:
@@ -177,6 +177,25 @@ class CEESpringStats:
         else:
             article_data['from_suggested_list'] = False
             article_data['suggested_country'] = ''
+        
+        # Add country validation information
+        if article_data:
+            countries = article_data.get('countries', [])
+            valid_countries = []
+            invalid_countries = []
+            
+            for country in countries:
+                country = country.strip()
+                if country:
+                    if country in ALLOWED_CONTEST_COUNTRIES:
+                        valid_countries.append(country)
+                    else:
+                        invalid_countries.append(country)
+            
+            article_data['valid_countries'] = valid_countries
+            article_data['invalid_countries'] = invalid_countries
+            article_data['has_valid_country'] = len(valid_countries) > 0
+            article_data['eligible_for_contest'] = len(valid_countries) > 0
         
         return article_data
     

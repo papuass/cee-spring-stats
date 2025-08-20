@@ -1,7 +1,7 @@
 """Generator for creating wikitext reports from collected data."""
 
 from typing import List, Dict, Any
-from .config import CATEGORY_PREFIX
+from .config import CATEGORY_PREFIX, ALLOWED_CONTEST_COUNTRIES
 
 
 class ReportGenerator:
@@ -70,8 +70,20 @@ class ReportGenerator:
         # Prepare topic column (comma-separated)
         topic_column = ', '.join(topic.strip() for topic in topics if topic.strip())
         
-        # Prepare country column (comma-separated)
-        country_column = ', '.join(country.strip() for country in countries if country.strip())
+        # Prepare country column using the pre-validated country data
+        country_parts = []
+        
+        # Add valid countries
+        valid_countries = article.get('valid_countries', [])
+        for country in valid_countries:
+            country_parts.append(country)
+        
+        # Add invalid countries in red
+        invalid_countries = article.get('invalid_countries', [])
+        for country in invalid_countries:
+            country_parts.append(f'<span style="color:red">{country}</span>')
+        
+        country_column = ', '.join(country_parts)
         
         # Build row data
         # Get actual size in bytes and Wikidata ID from the collected data
@@ -201,7 +213,13 @@ class ReportGenerator:
         if not articles_data:
             return "Nav atrasti raksti ar norādīto veidni.\n"
         
-        report = "== Konkursa kategorijas ==\n\n"
+        # Filter articles to only include those eligible for contest
+        valid_articles = [article for article in articles_data
+                         if article.get('eligible_for_contest', False)]
+        
+        report = "== Konkursa kategorijas ==\n"
+        report += f"''Tikai raksti ar derīgām konkursa valstīm tiek iekļauti šajās kategorijās. "
+        report += f"No {len(articles_data)} kopējiem rakstiem, {len(valid_articles)} atbilst kritērijiem.''\n\n"
         
         # 1. Labākais konkursa gaitā tapušais raksts žūrijas vērtējumā
         report += "=== Labākais konkursa gaitā tapušais raksts žūrijas vērtējumā ===\n"
@@ -210,7 +228,7 @@ class ReportGenerator:
         # 2. Lielākais devums konkursa gaitā - by contribution in bytes
         report += "=== Lielākais devums konkursa gaitā ===\n"
         participant_bytes = {}
-        for article in articles_data:
+        for article in valid_articles:
             participant = article.get('participant', '').strip()
             if participant:
                 size_bytes = article.get('size_bytes', 0)
@@ -229,7 +247,7 @@ class ReportGenerator:
         report += "=== Visvairāk izveidoto rakstu no tēmu sarakstiem ===\n"
         report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes''\n\n"   
         participant_articles_1500 = {}
-        for article in articles_data:
+        for article in valid_articles:
             participant = article.get('participant', '').strip()
             readable_length = article.get('readable_length', 0)
             from_suggested = article.get('from_suggested_list', False)
@@ -250,7 +268,7 @@ class ReportGenerator:
         report += "=== Visvairāk izveidoto sieviešu biogrāfiju rakstu ===\n"
         report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes''\n\n"   
         participant_women_articles = {}
-        for article in articles_data:
+        for article in valid_articles:
             participant = article.get('participant', '').strip()
             readable_length = article.get('readable_length', 0)
             topics = article.get('topics', [])
@@ -267,7 +285,7 @@ class ReportGenerator:
         report += "=== Visvairāk izveidoto cilvēktiesību tēmas rakstu ===\n"
         report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes''\n\n"       
         participant_rights_articles = {}
-        for article in articles_data:
+        for article in valid_articles:
             participant = article.get('participant', '').strip()
             readable_length = article.get('readable_length', 0)
             topics = article.get('topics', [])

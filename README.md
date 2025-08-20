@@ -28,8 +28,6 @@ cee-spring-stats/
 ├── 📁 cache/                   # Cached data files
 │   └── cee_spring_2025_cache.json    # Article data cache
 ├── 📁 debug/                   # Debug and analysis scripts
-│   ├── debug_armenia_duplicates.py   # Armenia duplicates analysis
-│   └── debug_page_size.py           # Page size debugging
 ├── 📁 docs/                    # Documentation
 │   ├── README.md              # This file
 │   └── USAGE_EXAMPLES.md      # Usage examples and guides
