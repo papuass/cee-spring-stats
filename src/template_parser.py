@@ -116,21 +116,35 @@ class TemplateParser:
                     # If removal fails, continue with other templates
                     continue
             
-            # Remove references (anything between <ref> tags)
+            # Convert to text for regex processing
             text = str(parsed)
+            
+            # Remove gallery tags and their content
+            text = re.sub(r'<gallery[^>]*>.*?</gallery>', '', text, flags=re.DOTALL | re.IGNORECASE)
+            
+            # Remove references - handle self-closing tags first to avoid greedy matching
+            # First remove self-closing ref tags like <ref name="..." />
+            text = re.sub(r'<ref[^>]*/\s*>', '', text, flags=re.IGNORECASE)
+            # Then remove paired ref tags with content like <ref>content</ref>
             text = re.sub(r'<ref[^>]*>.*?</ref>', '', text, flags=re.DOTALL | re.IGNORECASE)
-            text = re.sub(r'<ref[^>]*/?>', '', text, flags=re.IGNORECASE)
             
             # Remove HTML comments
             text = re.sub(r'<!--.*?-->', '', text, flags=re.DOTALL)
+            
+            # Remove other HTML-like tags that might contain non-readable content
+            text = re.sub(r'<nowiki[^>]*>.*?</nowiki>', '', text, flags=re.DOTALL | re.IGNORECASE)
+            text = re.sub(r'<pre[^>]*>.*?</pre>', '', text, flags=re.DOTALL | re.IGNORECASE)
+            text = re.sub(r'<code[^>]*>.*?</code>', '', text, flags=re.DOTALL | re.IGNORECASE)
+            text = re.sub(r'<math[^>]*>.*?</math>', '', text, flags=re.DOTALL | re.IGNORECASE)
             
             # Remove categories
             text = re.sub(r'\[\[Category:.*?\]\]', '', text, flags=re.IGNORECASE)
             text = re.sub(r'\[\[Kategorija:.*?\]\]', '', text, flags=re.IGNORECASE)
             
-            # Remove file/image links
+            # Remove file/image links (more comprehensive)
             text = re.sub(r'\[\[File:.*?\]\]', '', text, flags=re.IGNORECASE | re.DOTALL)
             text = re.sub(r'\[\[Attēls:.*?\]\]', '', text, flags=re.IGNORECASE | re.DOTALL)
+            text = re.sub(r'\[\[Image:.*?\]\]', '', text, flags=re.IGNORECASE | re.DOTALL)
             
             # Remove external links but keep the text
             text = re.sub(r'\[https?://[^\s\]]+\s+([^\]]+)\]', r'\1', text)
@@ -152,6 +166,9 @@ class TemplateParser:
             text = re.sub(r'^\|-.*?$', '', text, flags=re.MULTILINE)
             text = re.sub(r'^\|.*?$', '', text, flags=re.MULTILINE)
             text = re.sub(r'^!.*?$', '', text, flags=re.MULTILINE)
+            
+            # Remove remaining template-like structures that might have been missed
+            text = re.sub(r'\{\{[^}]*\}\}', '', text)
             
             # Clean up whitespace
             text = re.sub(r'\n\s*\n', '\n', text)  # Multiple newlines
