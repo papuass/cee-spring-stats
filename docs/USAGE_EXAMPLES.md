@@ -81,13 +81,13 @@ The main output file (`cee_spring_2025_results.txt`) contains:
 == Konkursā iesniegtie raksti ==
 {| class="sortable wikitable"
 |-
-! Raksts !! Dalībnieks !! 1. tēma !! 2. tēma !! 3. tēma !! 1. valsts !! 2. valsts !! 3. valsts !! Lasāmā teksta garums !! Raksta garums baitos !! Wikidata ID !! No ieteikumu saraksta
+! Raksts !! Dalībnieks !! Tēma !! Valsts !! Lasāmā teksta garums !! Raksta garums baitos !! Wikidata ID !! No ieteikumu saraksta
 |-
-| [[1978. gada demonstrācijas Gruzijā]] || {{U|Votre Provocateur}} || Vēsture ||  ||  || Gruzija ||  ||  || 820 || 2172 || [[d:Q51846024|Q51846024]] || Nē
+| [[1978. gada demonstrācijas Gruzijā]] || {{U|Votre Provocateur}} || Vēsture || Gruzija || 820 || 2172 || [[d:Q51846024|Q51846024]] ||
 |-
-| [[Ahmats Kadirovs]] || {{U|Votre Provocateur}} || Politika ||  ||  || Krievija ||  ||  || 1462 || 3245 || [[d:Q133458940|Q133458940]] || Jā
+| [[Ahmats Kadirovs]] || {{U|Votre Provocateur}} || Politika || Krievija || 1462 || 3245 || [[d:Q133458940|Q133458940]] || [[m:Wikimedia CEE Spring 2025/Structure/Russia/Politics|Russia/Politics]]
 |-
-| [[Akmens tilts (Tartu)]] || {{U|Egilus}} || Vēsture || Arhitektūra ||  || Igaunija ||  ||  || 7312 || 12456 || [[d:Q36831|Q36831]] || Nē
+| [[Akmens tilts (Tartu)]] || {{U|Egilus}} || Vēsture || Igaunija || 7312 || 12456 || [[d:Q36831|Q36831]] ||
 |-
 |}
 
@@ -232,7 +232,7 @@ Countries with suggested articles: 25
 1. **Collection Phase**: The tool fetches all structure pages from Meta-Wiki (e.g., `Wikimedia CEE Spring 2025/Structure/Armenia`)
 2. **Extraction**: It extracts Wikidata IDs from `{{#invoke:WikimediaCEETable|table|Q123|Q456|...}}` templates
 3. **Matching**: During article processing, it checks if each article's Wikidata ID matches any suggested ID
-4. **Reporting**: The results include a "No ieteikumu saraksta" (From Suggested List) column showing "Jā" (Yes) or "Nē" (No)
+4. **Reporting**: The results include a "No ieteikumu saraksta" (From Suggested List) column showing a link to the specific suggested topics page when the article is from a suggested list, or empty when it's not
 
 ### Suggested Articles Statistics
 
@@ -300,7 +300,7 @@ Tests passed: 3/3
 The wikitext table will show all topics in separate columns:
 
 ```wikitext
-| [[Article Title]] || {{U|Votre Provocateur}} || Sievietes || kultūra ||  || Čuvašija ||  ||  || 1234 || {{PAGESIZE:Article Title}}
+| [[Article Title]] || {{U|Votre Provocateur}} || Sievietes, kultūra || Čuvašija || 1234 || 3710 || [[d:Q123456|Q123456]] || [[m:Wikimedia CEE Spring 2025/Structure/Chuvashia/Culture|Chuvashia/Culture]]
 ```
 
 **Note**: The tool supports up to 3 topics and 3 countries per article, matching the table format requirements.
@@ -376,5 +376,3 @@ Copy the generated wikitext to Wikipedia:
 2. Copy the entire content
 3. Paste into a Wikipedia page (e.g., "Wikipedia:CEE Spring 2025/Results")
 4. The sortable table will work automatically with Wikipedia's table sorting
-
-The `{{PAGESIZE:Article Title}}` templates will automatically show current article sizes when published on Wikipedia.
