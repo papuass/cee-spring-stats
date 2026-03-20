@@ -11,7 +11,7 @@ META_WIKI_API_URL = "https://meta.wikimedia.org/w/api.php"
 USER_AGENT = "CEE-Spring-Stats-Tool/1.0 (https://lv.wikipedia.org/wiki/User:YourUsername)"
 
 # Contest settings
-CONTEST_YEAR = "2025"
+CONTEST_YEAR = "2026"
 CONTEST_TEMPLATE = f"CEE Spring {CONTEST_YEAR}"
 STRUCTURE_PAGE_PREFIX = f"Wikimedia CEE Spring {CONTEST_YEAR}/Structure/"
 CATEGORY_PREFIX = f"CEE Spring {CONTEST_YEAR} raksti"

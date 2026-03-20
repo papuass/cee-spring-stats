@@ -1,7 +1,7 @@
 """Generator for creating wikitext reports from collected data."""
 
 from typing import List, Dict, Any
-from .config import CATEGORY_PREFIX, ALLOWED_CONTEST_COUNTRIES
+from .config import CATEGORY_PREFIX, ALLOWED_CONTEST_COUNTRIES, CONTEST_YEAR
 
 
 class ReportGenerator:
@@ -101,7 +101,7 @@ class ReportGenerator:
         if from_suggested and 'suggested_country' in article:
             country = article['suggested_country']
             if country:
-                suggested_indicator = f"[[m:Wikimedia CEE Spring 2025/Structure/{country}|{country}]]"
+                suggested_indicator = f"[[m:Wikimedia CEE Spring {CONTEST_YEAR}/Structure/{country}|{country}]]"
             else:
                 suggested_indicator = ""
         else:
