@@ -1,6 +1,6 @@
 # CEE Spring Statistics Tool
 
-A comprehensive tool for collecting and analyzing statistics from Wikipedia articles submitted to the CEE Spring contest. This tool automatically gathers data from articles tagged with the `{{CEE Spring 2025}}` template and generates comprehensive reports in wikitext format.
+A comprehensive tool for collecting and analyzing statistics from Wikipedia articles submitted to the CEE Spring contest. This tool automatically gathers data from articles tagged with the `{{CEE Spring 2026}}` template and generates comprehensive reports in wikitext format.
 
 ## 🏗️ Project Structure
 
@@ -20,18 +20,18 @@ cee-spring-stats/
 │   ├── test_multiple_topics.py       # Multiple topics tests
 │   ├── test_20_articles.py           # Limited article tests
 │   └── test_topic_normalization.py   # Topic normalization tests
-├── 📁 output/                  # Generated reports and results
-│   ├── cee_spring_2025_results.txt   # Main wikitext report
+├── 📁 output/                  # Generated reports and results (auto-created)
+│   ├── cee_spring_2026_results.txt   # Main wikitext report
 │   ├── participant_report.txt        # Participant breakdown
 │   ├── contest_categories.txt        # Contest categories
 │   └── validation_report.txt         # Data validation report
-├── 📁 cache/                   # Cached data files
-│   └── cee_spring_2025_cache.json    # Article data cache
+├── 📁 cache/                   # Cached data files (auto-created)
+│   └── cee_spring_2026_cache.json    # Article data cache
 ├── 📁 debug/                   # Debug and analysis scripts
 ├── 📁 docs/                    # Documentation
 │   └── USAGE_EXAMPLES.md      # Usage examples and guides
 ├── cee_spring_stats.py        # Main entry point script
-├── requirements.txt           # Python dependencies
+├── pyproject.toml             # Project dependencies (managed with uv)
 └── .env.example              # Environment variables template
 ```
 
@@ -39,7 +39,7 @@ cee-spring-stats/
 
 1. **Install dependencies:**
    ```bash
-   pip install -r requirements.txt
+   uv sync
    ```
 
 2. **Run the tool:**
@@ -48,7 +48,7 @@ cee-spring-stats/
    ```
 
 3. **View results:**
-   - Main report: `output/cee_spring_2025_results.txt`
+   - Main report: `output/cee_spring_2026_results.txt`
    - Participant breakdown: `output/participant_report.txt`
    - Contest categories: `output/contest_categories.txt`
 
@@ -128,7 +128,7 @@ The tool generates comprehensive reports including:
 
 The tool generates several output files:
 
-### 1. Main Results (`cee_spring_2025_results.txt`)
+### 1. Main Results (`cee_spring_2026_results.txt`)
 
 A wikitext table ready for publishing on Wikipedia:
 
@@ -138,7 +138,7 @@ A wikitext table ready for publishing on Wikipedia:
 |-
 ! Raksts !! Dalībnieks !! Tēma !! Valsts !! Lasāmā teksta garums !! Raksta garums baitos !! Wikidata ID !! No ieteikumu saraksta
 |-
-| [[Article Title]] || {{U|Username}} || Topic1, Topic2 || Country1, Country2 || 1234 || 3894 || [[d:Q123456|Q123456]] || [[m:Wikimedia CEE Spring 2025/Structure/Country/Topic|Country/Topic]]
+| [[Article Title]] || {{U|Username}} || Topic1, Topic2 || Country1, Country2 || 1234 || 3894 || [[d:Q123456|Q123456]] || [[m:Wikimedia CEE Spring 2026/Structure/Country/Topic|Country/Topic]]
 |-
 | [[Another Article]] || {{U|Username2}} || Topic3 || Country3 || 2345 || 5309 || [[d:Q789012|Q789012]] ||
 |-
@@ -176,7 +176,7 @@ WARNINGS:
 ⚠️  Most common countries: Latvia (67), Estonia (45), Lithuania (34)
 ```
 
-### 4. Cache File (`cee_spring_2025_cache.json`)
+### 4. Cache File (`cee_spring_2026_cache.json`)
 
 JSON file containing all collected data for reuse and backup.
 
@@ -186,16 +186,16 @@ Key settings in [`src/config.py`](src/config.py):
 
 ```python
 # Contest settings
-CONTEST_TEMPLATE = "CEE Spring 2025"
-CONTEST_YEAR = "2025"
+CONTEST_TEMPLATE = "CEE Spring 2026"
+CONTEST_YEAR = "2026"
 
 # API settings
 MEDIAWIKI_API_URL = "https://lv.wikipedia.org/w/api.php"
 API_RATE_LIMIT = 1.0  # requests per second
 
 # Output files
-OUTPUT_FILE = f"cee_spring_{CONTEST_YEAR}_results.txt"
-CACHE_FILE = f"cee_spring_{CONTEST_YEAR}_cache.json"
+OUTPUT_FILE = f"output/cee_spring_{CONTEST_YEAR}_results.txt"
+CACHE_FILE = f"cache/cee_spring_{CONTEST_YEAR}_cache.json"
 ```
 
 ## 📝 Template Format
@@ -203,7 +203,7 @@ CACHE_FILE = f"cee_spring_{CONTEST_YEAR}_cache.json"
 The tool expects templates in this format on article talk pages:
 
 ```wikitext
-{{CEE Spring 2025
+{{CEE Spring 2026
 |dalībnieks = Username
 |tēma       = Topic
 |tēma2      = Second Topic (optional)
@@ -259,8 +259,8 @@ python tests/test_suggested_integration.py
 
 1. Update [`src/config.py`](src/config.py):
    ```python
-   CONTEST_TEMPLATE = "CEE Spring 2026"
-   CONTEST_YEAR = "2026"
+   CONTEST_TEMPLATE = "CEE Spring 2027"
+   CONTEST_YEAR = "2027"
    ```
 
 2. Update template field mappings if needed:
