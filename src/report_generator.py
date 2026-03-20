@@ -1,5 +1,6 @@
 """Generator for creating wikitext reports from collected data."""
 
+import os
 from typing import List, Dict, Any
 from .config import CATEGORY_PREFIX, ALLOWED_CONTEST_COUNTRIES, CONTEST_YEAR
 
@@ -346,6 +347,7 @@ class ReportGenerator:
     def save_report(self, content: str, filename: str) -> bool:
         """Save report content to a file."""
         try:
+            os.makedirs(os.path.dirname(filename), exist_ok=True) if os.path.dirname(filename) else None
             with open(filename, 'w', encoding='utf-8') as f:
                 f.write(content)
             return True

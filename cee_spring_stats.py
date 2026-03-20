@@ -243,6 +243,7 @@ class CEESpringStats:
                 'articles': articles_data
             }
             
+            os.makedirs(os.path.dirname(self.cache_file), exist_ok=True)
             with open(self.cache_file, 'w', encoding='utf-8') as f:
                 json.dump(cache_data, f, ensure_ascii=False, indent=2)
             
