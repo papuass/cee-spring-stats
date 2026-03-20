@@ -6,7 +6,7 @@ from src.config import CONTEST_TEMPLATE
 def test_topic_normalization():
     """Test topic name normalization."""
     parser = TemplateParser()
-    
+
     # Test cases
     test_cases = [
         ("kultūra", "Kultūra"),
@@ -17,13 +17,13 @@ def test_topic_normalization():
         ("  zinātne  ", "Zinātne"),
         ("", ""),
     ]
-    
+
     print("Testing topic normalization:")
     for original, expected in test_cases:
         result = parser._normalize_topic_name(original)
         status = "✅" if result == expected else "❌"
         print(f"  {status} '{original}' -> '{result}' (expected: '{expected}')")
-    
+
     # Test with full template
     sample_template = f"""
 {{{{{CONTEST_TEMPLATE}
@@ -33,7 +33,7 @@ def test_topic_normalization():
 |valsts   = Latvija
 }}}}
 """
-    
+
     print("\nTesting full template parsing:")
     result = parser.parse_cee_spring_template(sample_template)
     if result:

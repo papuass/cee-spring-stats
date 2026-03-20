@@ -11,25 +11,25 @@ def test_suggested_integration():
     print("="*60)
     print("TESTING SUGGESTED ARTICLES INTEGRATION")
     print("="*60)
-    
+
     # Create stats collector
     stats = CEESpringStats()
-    
+
     # Test suggested articles collection
     print("1. Testing suggested articles collection...")
     try:
         suggested_ids = stats.suggested_collector.collect_all_suggested_articles()
         print(f"✅ Found {len(suggested_ids)} suggested Wikidata IDs")
-        
+
         # Show a few examples
         if suggested_ids:
             sample_ids = list(suggested_ids)[:5]
             print(f"   Sample IDs: {', '.join(sample_ids)}")
-        
+
     except Exception as e:
         print(f"❌ Error collecting suggested articles: {e}")
         return False
-    
+
     # Test processing a few articles with suggested check
     print("\n2. Testing article processing with suggested check...")
     try:
@@ -38,16 +38,16 @@ def test_suggested_integration():
         if not article_titles:
             print("❌ No articles found")
             return False
-        
+
         # Process first 3 articles
         test_articles = article_titles[:3]
         print(f"   Processing {len(test_articles)} test articles...")
-        
+
         page_info = stats.client.get_page_info(test_articles)
-        
+
         processed_count = 0
         suggested_count = 0
-        
+
         for title in test_articles:
             try:
                 article_data = stats._process_single_article(title, page_info.get(title, {}))
@@ -56,18 +56,18 @@ def test_suggested_integration():
                     is_suggested = article_data.get('from_suggested_list', False)
                     if is_suggested:
                         suggested_count += 1
-                    
+
                     print(f"   ✓ {title}: Suggested={is_suggested}, Wikidata={article_data.get('wikidata_id', 'None')}")
-                
+
             except Exception as e:
                 print(f"   ❌ Error processing {title}: {e}")
-        
+
         print(f"✅ Processed {processed_count} articles, {suggested_count} from suggested lists")
-        
+
     except Exception as e:
         print(f"❌ Error in article processing test: {e}")
         return False
-    
+
     # Test report generation with suggested column
     print("\n3. Testing report generation with suggested column...")
     try:
@@ -94,14 +94,14 @@ def test_suggested_integration():
                 'from_suggested_list': False
             }
         ]
-        
+
         # Generate report
         report = stats.reporter.generate_wikitext_table(sample_data, "Test Report")
-        
+
         # Check if suggested column is included
         if "No ieteikumu saraksta" in report and "Jā" in report and "Nē" in report:
             print("✅ Report generation with suggested column works correctly")
-            
+
             # Save test report
             with open('test_suggested_report.txt', 'w', encoding='utf-8') as f:
                 f.write(report)
@@ -109,11 +109,11 @@ def test_suggested_integration():
         else:
             print("❌ Suggested column not found in report")
             return False
-            
+
     except Exception as e:
         print(f"❌ Error in report generation test: {e}")
         return False
-    
+
     print("\n" + "="*60)
     print("✅ ALL SUGGESTED ARTICLES INTEGRATION TESTS PASSED!")
     print("="*60)
