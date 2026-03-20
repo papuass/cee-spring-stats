@@ -1,0 +1,10 @@
+[project]
+name = "cee-spring-stats"
+version = "0.1.0"
+description = "Wikipedia CEE Spring contest statistics tool"
+requires-python = ">=3.11"
+dependencies = [
+    "requests>=2.31.0",
+    "mwparserfromhell>=0.6.4",
+    "python-dotenv>=1.0.0",
+]
