@@ -14,5 +14,3 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] Posting to Wikipedia..."
 uv run python post_stats.py
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Done"
-
-curl -fsS --retry 3 https://hc-ping.com/b7d6a3c1-1ceb-4fee-92db-658be4e1cb00 > /dev/null
