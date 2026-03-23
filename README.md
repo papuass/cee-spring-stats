@@ -13,7 +13,8 @@ cee-spring-stats/
 │   ├── template_parser.py      # Template parsing logic
 │   ├── report_generator.py     # Report generation
 │   ├── data_validator.py       # Data validation
-│   └── suggested_articles.py   # Meta-Wiki suggested articles collector
+│   ├── suggested_articles.py   # Meta-Wiki suggested articles collector
+│   └── wikipedia_poster.py     # Wikipedia authentication and page editing
 ├── 📁 tests/                   # Test scripts
 │   ├── test_tool.py           # Main test suite
 │   ├── test_suggested_integration.py  # Suggested articles tests
@@ -31,6 +32,8 @@ cee-spring-stats/
 ├── 📁 docs/                    # Documentation
 │   └── USAGE_EXAMPLES.md      # Usage examples and guides
 ├── cee_spring_stats.py        # Main entry point script
+├── post_stats.py              # Post results to Wikipedia
+├── update_and_post.sh         # Cron wrapper: generate + post + ping healthcheck
 ├── pyproject.toml             # Project dependencies (managed with uv)
 └── .env.example              # Environment variables template
 ```
@@ -42,20 +45,32 @@ cee-spring-stats/
    uv sync
    ```
 
-2. **Run the tool:**
+2. **Configure environment:**
    ```bash
-   python cee_spring_stats.py
+   cp .env.example .env
+   # Edit .env — required for posting to Wikipedia
    ```
 
-3. **View results:**
+3. **Run the tool:**
+   ```bash
+   uv run python cee_spring_stats.py
+   ```
+
+4. **View results:**
    - Main report: `output/cee_spring_2026_results.txt`
    - Participant breakdown: `output/participant_report.txt`
    - Contest categories: `output/contest_categories.txt`
 
+5. **Post results to Wikipedia:**
+   ```bash
+   uv run python post_stats.py --dry-run   # preview
+   uv run python post_stats.py             # post
+   ```
+
 ## ✨ Key Features
 
 ### 📊 **Comprehensive Data Collection**
-- Automatically finds all articles with CEE Spring 2025 template
+- Automatically finds all articles with CEE Spring 2026 template
 - Collects article metadata (size, readable text length, Wikidata IDs)
 - Extracts participant information and topics
 - Supports multiple topics and countries per article
@@ -224,7 +239,9 @@ The tool consists of several modular components:
 2. **[`src/template_parser.py`](src/template_parser.py)**: Template parsing and text analysis
 3. **[`src/report_generator.py`](src/report_generator.py)**: Wikitext report generation
 4. **[`src/data_validator.py`](src/data_validator.py)**: Data validation and duplicate detection
-5. **[`cee_spring_stats.py`](cee_spring_stats.py)**: Main orchestration script
+5. **[`src/wikipedia_poster.py`](src/wikipedia_poster.py)**: Wikipedia authentication and page editing
+6. **[`cee_spring_stats.py`](cee_spring_stats.py)**: Main orchestration script
+7. **[`post_stats.py`](post_stats.py)**: Posts generated stats to Wikipedia
 
 ### Data Flow
 
@@ -235,6 +252,7 @@ The tool consists of several modular components:
 4. Calculate readable text length
 5. Validate and clean data
 6. Generate reports in wikitext format
+7. Post results to Wikipedia statistics page (post_stats.py)
 ```
 
 ## 🧪 Testing
@@ -297,6 +315,34 @@ def calculate_reference_count(self, wikitext: str) -> int:
     """Count the number of references in the article."""
     ref_pattern = r'<ref[^>]*>.*?</ref>'
     return len(re.findall(ref_pattern, wikitext, re.DOTALL | re.IGNORECASE))
+```
+
+## 🤖 Automated Daily Posting
+
+`update_and_post.sh` runs the full pipeline: fetch fresh stats, post to Wikipedia, and ping [healthchecks.io](https://healthchecks.io) on success.
+
+Set up a system cron job (runs daily at 06:03):
+
+```bash
+# Add to crontab (crontab -e)
+3 6 * * * . $HOME/.profile && /path/to/cee-spring-stats/update_and_post.sh >> /tmp/cee-spring-stats.log 2>&1
+```
+
+**Required `.env` variables for posting:**
+
+```env
+WIKI_USERNAME=YourUsername@BotPasswordName
+WIKI_PASSWORD=your_bot_password_here
+WIKI_BEGIN_MARKER=<!-- BEGIN -->
+WIKI_END_MARKER=<!-- END -->
+```
+
+Create a bot password at [Special:BotPasswords](https://lv.wikipedia.org/wiki/Special:BotPasswords) with "Edit existing pages" permission.
+
+Test before enabling the cron:
+
+```bash
+uv run python post_stats.py --dry-run
 ```
 
 ## 🔍 Troubleshooting
