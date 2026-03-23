@@ -325,7 +325,7 @@ Set up a system cron job (runs daily at 06:03):
 
 ```bash
 # Add to crontab (crontab -e)
-3 6 * * * . $HOME/.profile && /path/to/cee-spring-stats/update_and_post.sh >> /tmp/cee-spring-stats.log 2>&1
+3 6 * * * . $HOME/.profile && /path/to/cee-spring-stats/update_and_post.sh >> /tmp/cee-spring-stats.log 2>&1 && curl -fsS --retry 3 https://hc-ping.com/your-uuid-here > /dev/null
 ```
 
 **Required `.env` variables for posting:**
