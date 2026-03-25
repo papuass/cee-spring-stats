@@ -222,11 +222,7 @@ class ReportGenerator:
         report += "''Tikai raksti ar derīgām konkursa valstīm tiek iekļauti šajās kategorijās. "
         report += f"No {len(articles_data)} kopējiem rakstiem, {len(valid_articles)} atbilst kritērijiem.''\n\n"
 
-        # 1. Labākais konkursa gaitā tapušais raksts žūrijas vērtējumā
-        report += "=== Labākais konkursa gaitā tapušais raksts žūrijas vērtējumā ===\n"
-        report += "''(Aizpildīt manuāli)''\n\n"
-
-        # 2. Lielākais devums konkursa gaitā - by contribution in bytes
+        # Lielākais devums konkursa gaitā - by contribution in bytes
         report += "=== Lielākais devums konkursa gaitā ===\n"
         participant_bytes = {}
         for article in valid_articles:
@@ -296,6 +292,23 @@ class ReportGenerator:
 
         sorted_by_rights = sorted(participant_rights_articles.items(), key=lambda x: x[1], reverse=True)
         for i, (participant, count) in enumerate(sorted_by_rights, 1):
+            report += f"# {{{{U|{participant}}}}} - {count} raksti\n"
+        report += "\n"
+
+        # 8. Visvairāk izveidoto jauniešu tēmas rakstu
+        report += "=== Visvairāk izveidoto jauniešu tēmas rakstu ===\n"
+        report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes''\n\n"
+        participant_youth_articles = {}
+        for article in valid_articles:
+            participant = article.get('participant', '').strip()
+            readable_length = article.get('readable_length', 0)
+            topics = article.get('topics', [])
+
+            if participant and readable_length >= 1500 and 'Jaunieši' in topics:
+                participant_youth_articles[participant] = participant_youth_articles.get(participant, 0) + 1
+
+        sorted_by_youth = sorted(participant_youth_articles.items(), key=lambda x: x[1], reverse=True)
+        for i, (participant, count) in enumerate(sorted_by_youth, 1):
             report += f"# {{{{U|{participant}}}}} - {count} raksti\n"
         report += "\n"
 

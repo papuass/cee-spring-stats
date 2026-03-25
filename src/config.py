@@ -34,7 +34,7 @@ ALLOWED_CONTEST_COUNTRIES = [
     "Gruzija", "Horvātija", "Igaunija", "karaīmi", "Kazahstāna", "Kipra",
     "Kosova", "Krievija", "Krievijas ziemeļrietumu reģions", "Krimas tatāri",
     "krimčaki", "Lietuva", "Malta", "Melnkalne", "Polija",
-    "rietumarmēņu valoda", "Rumānija un Moldova", "Serbija", "Serbu Republika",
+    "Moldova", "rietumarmēņu valoda", "Rumānija", "Rumānija un Moldova", "Serbija", "Serbu Republika",
     "Slovākija", "Slovēnija", "sorbi", "starptautiski", "tatāri", "Turcija",
     "Ukraina", "Ungārija", "veru valoda", "Ziemeļmaķedonija"
 ]
