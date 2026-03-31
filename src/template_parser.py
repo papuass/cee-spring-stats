@@ -52,7 +52,9 @@ class TemplateParser:
         # Extract parameters from template
         for param in template.params:
             param_name = str(param.name).strip()
-            param_value = str(param.value).strip()
+            # Strip Unicode directional/invisible formatting marks that can appear
+            # when values are copy-pasted from some editors or mobile browsers
+            param_value = str(param.value).strip().strip('\u200e\u200f\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069')
 
             if not param_value:
                 continue
