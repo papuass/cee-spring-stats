@@ -11,7 +11,7 @@ from src.template_parser import TemplateParser
 from src.report_generator import ReportGenerator
 from src.data_validator import DataValidator
 from src.suggested_articles import SuggestedArticlesCollector
-from src.config import CONTEST_TEMPLATE, CACHE_FILE, OUTPUT_FILE, ALLOWED_CONTEST_COUNTRIES
+from src.config import CONTEST_TEMPLATE, CACHE_FILE, OUTPUT_FILE, ALLOWED_CONTEST_COUNTRIES, NEW_USER_EDIT_THRESHOLD, NEW_USER_REFERENCE_DATE
 
 
 class CEESpringStats:
@@ -76,6 +76,22 @@ class CEESpringStats:
             if save_cache:
                 self._save_cache(articles_data)
                 print(f"Saved {len(articles_data)} articles to cache.")
+
+        # Fetch edit counts as of contest start date and tag new users
+        print(f"Fetching user edit counts before {NEW_USER_REFERENCE_DATE}...")
+        unique_participants = list({
+            a['participant'] for a in articles_data if a.get('participant')
+        })
+        edit_counts = self.client.get_user_edit_counts_before_date(
+            unique_participants, NEW_USER_REFERENCE_DATE
+        )
+        for article in articles_data:
+            p = article.get('participant', '')
+            count = edit_counts.get(p, -1)
+            article['edit_count'] = count
+            article['is_new_user'] = (count != -1 and count < NEW_USER_EDIT_THRESHOLD)
+        new_user_names = [p for p, c in edit_counts.items() if c != -1 and c < NEW_USER_EDIT_THRESHOLD]
+        print(f"New users (< {NEW_USER_EDIT_THRESHOLD} edits): {new_user_names if new_user_names else 'none'}")
 
         # Validate and clean data
         print("Validating data...")

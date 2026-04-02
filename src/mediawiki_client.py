@@ -185,6 +185,66 @@ class MediaWikiClient:
 
         return all_info
 
+    def get_user_edit_counts_before_date(self, usernames: List[str], before_date: str) -> Dict[str, int]:
+        """
+        Get the number of edits each user had made before a given date.
+
+        Fetches up to NEW_USER_EDIT_THRESHOLD + 1 contributions per user to determine
+        whether they crossed the threshold. Returns the exact count if below threshold,
+        or threshold if at or above.
+
+        Args:
+            usernames: List of usernames to check
+            before_date: ISO 8601 timestamp (e.g. "2026-03-21T00:00:00Z")
+
+        Returns:
+            Dictionary mapping username to edit count (capped at threshold when >= threshold).
+            Returns -1 for users not found.
+        """
+        from .config import NEW_USER_EDIT_THRESHOLD
+
+        results = {}
+        for username in usernames:
+            if not username:
+                continue
+
+            count = 0
+            continue_param = None
+
+            while True:
+                params = {
+                    'action': 'query',
+                    'list': 'usercontribs',
+                    'ucuser': username,
+                    'ucdir': 'newer',
+                    'ucend': before_date,
+                    'uclimit': NEW_USER_EDIT_THRESHOLD,
+                    'ucprop': 'ids',
+                }
+                if continue_param:
+                    params['uccontinue'] = continue_param
+
+                data = self._make_request(params)
+
+                if 'error' in data:
+                    count = -1
+                    break
+
+                contribs = data.get('query', {}).get('usercontribs', [])
+                count += len(contribs)
+
+                if 'continue' in data:
+                    if count >= NEW_USER_EDIT_THRESHOLD:
+                        # Already at or above threshold — no need to fetch more
+                        break
+                    continue_param = data['continue'].get('uccontinue')
+                else:
+                    break
+
+            results[username] = count
+
+        return results
+
     def get_page_categories(self, titles: List[str]) -> Dict[str, List[str]]:
         """
         Get categories for pages.

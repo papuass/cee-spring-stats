@@ -2,7 +2,7 @@
 
 import os
 from typing import List, Dict, Any
-from .config import CATEGORY_PREFIX, CONTEST_YEAR
+from .config import CATEGORY_PREFIX, CONTEST_YEAR, NEW_USER_EDIT_THRESHOLD, NEW_USER_REFERENCE_DATE
 
 
 class ReportGenerator:
@@ -238,7 +238,23 @@ class ReportGenerator:
 
         # 3. Lielākais devums konkursa gaitā jaunam lietotājam
         report += "=== Lielākais devums konkursa gaitā jaunam lietotājam ===\n"
-        report += "''(Aizpildīt manuāli)''\n\n"
+        report += f"''Jauns lietotājs — mazāk par {NEW_USER_EDIT_THRESHOLD} labojumiem lv.wikipedia.org pirms {NEW_USER_REFERENCE_DATE[:10]}''\n\n"
+        new_user_bytes = {}
+        for article in valid_articles:
+            if not article.get('is_new_user'):
+                continue
+            participant = article.get('participant', '').strip()
+            if participant:
+                size_bytes = article.get('size_bytes', 0)
+                new_user_bytes[participant] = new_user_bytes.get(participant, 0) + size_bytes
+
+        if new_user_bytes:
+            sorted_new_user_bytes = sorted(new_user_bytes.items(), key=lambda x: x[1], reverse=True)
+            for i, (participant, total_bytes) in enumerate(sorted_new_user_bytes, 1):
+                report += f"# {{{{U|{participant}}}}} - {total_bytes:,} baiti\n"
+        else:
+            report += "''Nav jaunu lietotāju dalībnieku.''\n"
+        report += "\n"
 
         # 4. Visvairāk izveidoto rakstu no tēmu sarakstiem
         report += "=== Visvairāk izveidoto rakstu no tēmu sarakstiem ===\n"
@@ -259,7 +275,24 @@ class ReportGenerator:
         # 5. Visvairāk izveidoto rakstu no tēmu sarakstiem jaunam dalībniekam
         report += "=== Visvairāk izveidoto rakstu no tēmu sarakstiem jaunam dalībniekam ===\n"
         report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes''\n\n"
-        report += "''(Aizpildīt manuāli)''\n\n"
+        report += f"''Jauns lietotājs — mazāk par {NEW_USER_EDIT_THRESHOLD} labojumiem lv.wikipedia.org pirms {NEW_USER_REFERENCE_DATE[:10]}''\n\n"
+        new_user_articles_1500 = {}
+        for article in valid_articles:
+            if not article.get('is_new_user'):
+                continue
+            participant = article.get('participant', '').strip()
+            readable_length = article.get('readable_length', 0)
+            from_suggested = article.get('from_suggested_list', False)
+            if participant and readable_length >= 1500 and from_suggested:
+                new_user_articles_1500[participant] = new_user_articles_1500.get(participant, 0) + 1
+
+        if new_user_articles_1500:
+            sorted_new_user_1500 = sorted(new_user_articles_1500.items(), key=lambda x: x[1], reverse=True)
+            for i, (participant, count) in enumerate(sorted_new_user_1500, 1):
+                report += f"# {{{{U|{participant}}}}} - {count} raksti (no ieteikumu sarakstiem, 1500+ rakstzīmes)\n"
+        else:
+            report += "''Nav jaunu lietotāju dalībnieku.''\n"
+        report += "\n"
 
         # 6. Visvairāk izveidoto sieviešu biogrāfiju rakstu
         report += "=== Visvairāk izveidoto sieviešu biogrāfiju rakstu ===\n"

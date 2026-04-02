@@ -19,6 +19,11 @@ CATEGORY_PREFIX = f"CEE Spring {CONTEST_YEAR} raksti"
 # API rate limiting (requests per second)
 API_RATE_LIMIT = 1.0
 
+# New user threshold: users with fewer than this many edits on lv.wikipedia.org
+# before the contest start date are considered new users.
+NEW_USER_EDIT_THRESHOLD = 400
+NEW_USER_REFERENCE_DATE = "2026-03-21T00:00:00Z"
+
 # Output settings
 OUTPUT_FILE = f"output/cee_spring_{CONTEST_YEAR}_results.txt"
 CACHE_FILE = f"cache/cee_spring_{CONTEST_YEAR}_cache.json"
