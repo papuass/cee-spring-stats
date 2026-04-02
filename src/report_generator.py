@@ -258,7 +258,7 @@ class ReportGenerator:
 
         # 4. Visvairāk izveidoto rakstu no tēmu sarakstiem
         report += "=== Visvairāk izveidoto rakstu no tēmu sarakstiem ===\n"
-        report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes''\n\n"
+        report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes. Lai pretendētu uz balvu, nepieciešami vismaz 5 raksti.''\n\n"
         participant_articles_1500 = {}
         for article in valid_articles:
             participant = article.get('participant', '').strip()
@@ -296,7 +296,7 @@ class ReportGenerator:
 
         # 6. Visvairāk izveidoto sieviešu biogrāfiju rakstu
         report += "=== Visvairāk izveidoto sieviešu biogrāfiju rakstu ===\n"
-        report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes''\n\n"
+        report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes. Lai pretendētu uz balvu, nepieciešami vismaz 5 raksti.''\n\n"
         participant_women_articles = {}
         for article in valid_articles:
             participant = article.get('participant', '').strip()
@@ -313,7 +313,7 @@ class ReportGenerator:
 
         # 7. Visvairāk izveidoto cilvēktiesību tēmas rakstu
         report += "=== Visvairāk izveidoto cilvēktiesību tēmas rakstu ===\n"
-        report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes''\n\n"
+        report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes. Lai pretendētu uz balvu, nepieciešami vismaz 5 raksti.''\n\n"
         participant_rights_articles = {}
         for article in valid_articles:
             participant = article.get('participant', '').strip()
@@ -330,7 +330,7 @@ class ReportGenerator:
 
         # 8. Visvairāk izveidoto jauniešu tēmas rakstu
         report += "=== Visvairāk izveidoto jauniešu tēmas rakstu ===\n"
-        report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes''\n\n"
+        report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes. Lai pretendētu uz balvu, nepieciešami vismaz 5 raksti.''\n\n"
         participant_youth_articles = {}
         for article in valid_articles:
             participant = article.get('participant', '').strip()
