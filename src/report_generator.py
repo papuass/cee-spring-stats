@@ -274,7 +274,7 @@ class ReportGenerator:
 
         # 5. Visvairāk izveidoto rakstu no tēmu sarakstiem jaunam dalībniekam
         report += "=== Visvairāk izveidoto rakstu no tēmu sarakstiem jaunam dalībniekam ===\n"
-        report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes''\n\n"
+        report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes. Lai pretendētu uz balvu, nepieciešami vismaz 5 raksti.''\n\n"
         report += f"''Jauns lietotājs — mazāk par {NEW_USER_EDIT_THRESHOLD} labojumiem lv.wikipedia.org pirms {NEW_USER_REFERENCE_DATE[:10]}''\n\n"
         new_user_articles_1500 = {}
         for article in valid_articles:
