@@ -98,11 +98,12 @@ class ReportGenerator:
         else:
             wikidata_link = ""
 
-        # Format suggested list indicator as meta page link or empty
-        if from_suggested and 'suggested_country' in article:
-            country = article['suggested_country']
-            if country:
-                suggested_indicator = f"[[m:Wikimedia CEE Spring {CONTEST_YEAR}/Structure/{country}|{country}]]"
+        # Format suggested list indicator as meta page link(s) or empty
+        if from_suggested:
+            countries = article.get('suggested_countries', [])
+            if countries:
+                links = [f"[[m:Wikimedia CEE Spring {CONTEST_YEAR}/Structure/{c}|{c}]]" for c in countries]
+                suggested_indicator = ", ".join(links)
             else:
                 suggested_indicator = ""
         else:
@@ -258,7 +259,7 @@ class ReportGenerator:
 
         # 4. Visvairāk izveidoto rakstu no tēmu sarakstiem
         report += "=== Visvairāk izveidoto rakstu no tēmu sarakstiem ===\n"
-        report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes. Lai pretendētu uz balvu, nepieciešami vismaz 5 raksti.''\n\n"
+        report += "''Raksts iekļauts kādā no ieteicamo tēmu sarakstiem. Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes. Lai pretendētu uz balvu, nepieciešami vismaz 5 raksti.''\n\n"
         participant_articles_1500 = {}
         for article in valid_articles:
             participant = article.get('participant', '').strip()
@@ -269,12 +270,12 @@ class ReportGenerator:
 
         sorted_by_articles_1500 = sorted(participant_articles_1500.items(), key=lambda x: x[1], reverse=True)
         for i, (participant, count) in enumerate(sorted_by_articles_1500, 1):
-            report += f"# {{{{U|{participant}}}}} - {count} raksti (no ieteikumu sarakstiem, 1500+ rakstzīmes)\n"
+            report += f"# {{{{U|{participant}}}}} - {count} raksti\n"
         report += "\n"
 
         # 5. Visvairāk izveidoto rakstu no tēmu sarakstiem jaunam dalībniekam
         report += "=== Visvairāk izveidoto rakstu no tēmu sarakstiem jaunam dalībniekam ===\n"
-        report += "''Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes. Lai pretendētu uz balvu, nepieciešami vismaz 5 raksti.''\n\n"
+        report += "''Raksts iekļauts kādā no ieteicamo tēmu sarakstiem. Minimālais lasāmā teksta apjoms ir 1500 rakstzīmes. Lai pretendētu uz balvu, nepieciešami vismaz 5 raksti.''\n\n"
         report += f"''Jauns lietotājs — mazāk par {NEW_USER_EDIT_THRESHOLD} labojumiem lv.wikipedia.org pirms {NEW_USER_REFERENCE_DATE[:10]}''\n\n"
         new_user_articles_1500 = {}
         for article in valid_articles:
@@ -289,7 +290,7 @@ class ReportGenerator:
         if new_user_articles_1500:
             sorted_new_user_1500 = sorted(new_user_articles_1500.items(), key=lambda x: x[1], reverse=True)
             for i, (participant, count) in enumerate(sorted_new_user_1500, 1):
-                report += f"# {{{{U|{participant}}}}} - {count} raksti (no ieteikumu sarakstiem, 1500+ rakstzīmes)\n"
+                report += f"# {{{{U|{participant}}}}} - {count} raksti\n"
         else:
             report += "''Nav jaunu lietotāju dalībnieku.''\n"
         report += "\n"

@@ -46,12 +46,12 @@ class CEESpringStats:
         print("Collecting suggested articles from Meta-Wiki...")
         suggested_by_country = self.suggested_collector.collect_all_suggested_wikidata_ids()
 
-        # Build reverse mapping from Wikidata ID to country
+        # Build reverse mapping from Wikidata ID to countries (one ID may appear in multiple lists)
         self.suggested_by_country = {}
         self.suggested_ids = set()
         for country, wikidata_ids in suggested_by_country.items():
             for wikidata_id in wikidata_ids:
-                self.suggested_by_country[wikidata_id] = country
+                self.suggested_by_country.setdefault(wikidata_id, []).append(country)
                 self.suggested_ids.add(wikidata_id)
 
         print(f"Found {len(self.suggested_ids)} suggested Wikidata IDs from Meta-Wiki")
@@ -181,18 +181,18 @@ class CEESpringStats:
             title, talk_content, article_content, page_info
         )
 
-        # Check if this article is from suggested list and get country
+        # Check if this article is from suggested list and get countries
         if article_data and 'wikidata_id' in article_data:
             wikidata_id = article_data['wikidata_id']
             if wikidata_id in self.suggested_ids:
                 article_data['from_suggested_list'] = True
-                article_data['suggested_country'] = self.suggested_by_country.get(wikidata_id, '')
+                article_data['suggested_countries'] = self.suggested_by_country.get(wikidata_id, [])
             else:
                 article_data['from_suggested_list'] = False
-                article_data['suggested_country'] = ''
+                article_data['suggested_countries'] = []
         else:
             article_data['from_suggested_list'] = False
-            article_data['suggested_country'] = ''
+            article_data['suggested_countries'] = []
 
         # Add country validation information
         if article_data:
