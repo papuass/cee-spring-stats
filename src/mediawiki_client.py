@@ -107,35 +107,59 @@ class MediaWikiClient:
         Returns:
             Page content as string, or None if not found
         """
+        return self.get_pages_content([title], namespace).get(title)
+
+    def get_pages_content(self, titles: List[str], namespace: int = 0) -> Dict[str, Optional[str]]:
+        """
+        Get the content of multiple pages in batches of 50.
+
+        Args:
+            titles: List of page titles (without namespace prefix)
+            namespace: Namespace (0 = main, 1 = talk/Diskusija)
+
+        Returns:
+            Dictionary mapping original titles to page content (None if not found)
+        """
+        if not titles:
+            return {}
+
         if namespace == 1:
-            title = f'Diskusija:{title}'
+            prefixed = [f'Diskusija:{t}' for t in titles]
+        else:
+            prefixed = list(titles)
+        title_map = {p: t for p, t in zip(prefixed, titles)}
 
-        params = {
-            'action': 'query',
-            'prop': 'revisions',
-            'rvprop': 'content',
-            'rvslots': 'main',
-            'titles': title
-        }
+        batch_size = 50
+        results: Dict[str, Optional[str]] = {}
 
-        data = self._make_request(params)
+        for i in range(0, len(prefixed), batch_size):
+            batch = prefixed[i:i + batch_size]
 
-        if 'query' not in data or 'pages' not in data['query']:
-            return None
+            params = {
+                'action': 'query',
+                'prop': 'revisions',
+                'rvprop': 'content',
+                'rvslots': 'main',
+                'titles': '|'.join(batch)
+            }
 
-        pages = data['query']['pages']
-        if not pages:
-            return None
+            data = self._make_request(params)
 
-        page = pages[0]
-        if 'missing' in page or 'revisions' not in page:
-            return None
+            if 'query' not in data or 'pages' not in data['query']:
+                continue
 
-        revision = page['revisions'][0]
-        if 'slots' in revision and 'main' in revision['slots']:
-            return revision['slots']['main']['content']
+            for page in data['query']['pages']:
+                original_title = title_map.get(page['title'], page['title'])
+                if 'missing' in page or 'revisions' not in page:
+                    results[original_title] = None
+                else:
+                    revision = page['revisions'][0]
+                    if 'slots' in revision and 'main' in revision['slots']:
+                        results[original_title] = revision['slots']['main']['content']
+                    else:
+                        results[original_title] = None
 
-        return None
+        return results
 
     def get_page_info(self, titles: List[str]) -> Dict[str, Dict[str, Any]]:
         """

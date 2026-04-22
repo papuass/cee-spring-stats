@@ -141,6 +141,12 @@ class CEESpringStats:
         print("Fetching page information...")
         page_info = self.client.get_page_info(article_titles)
 
+        # Batch-fetch talk page and article content
+        print("Fetching talk page content...")
+        talk_contents = self.client.get_pages_content(article_titles, namespace=1)
+        print("Fetching article content...")
+        article_contents = self.client.get_pages_content(article_titles, namespace=0)
+
         # Process each article
         articles_data = []
         total_articles = len(article_titles)
@@ -149,7 +155,12 @@ class CEESpringStats:
             print(f"Processing article {i}/{total_articles}: {title}")
 
             try:
-                article_data = self._process_single_article(title, page_info.get(title, {}))
+                article_data = self._process_single_article(
+                    title,
+                    page_info.get(title, {}),
+                    talk_contents.get(title),
+                    article_contents.get(title),
+                )
                 if article_data:
                     articles_data.append(article_data)
                     print(f"  ✓ Processed: {article_data['participant']} - {len(article_data['topics'])} topics")
@@ -162,16 +173,16 @@ class CEESpringStats:
         print(f"Successfully processed {len(articles_data)} articles.")
         return articles_data
 
-    def _process_single_article(self, title: str, page_info: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def _process_single_article(self, title: str, page_info: Dict[str, Any], talk_content: Optional[str] = None, article_content: Optional[str] = None) -> Optional[Dict[str, Any]]:
         """Process a single article and extract all relevant data."""
-        # Get talk page content
-        talk_content = self.client.get_page_content(title, namespace=1)
+        if talk_content is None:
+            talk_content = self.client.get_page_content(title, namespace=1)
         if not talk_content:
             print(f"  Warning: No talk page found for {title}")
             return None
 
-        # Get article content for readable text calculation
-        article_content = self.client.get_page_content(title, namespace=0)
+        if article_content is None:
+            article_content = self.client.get_page_content(title, namespace=0)
         if not article_content:
             print(f"  Warning: No article content found for {title}")
             article_content = ""

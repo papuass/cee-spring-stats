@@ -138,6 +138,38 @@ class SuggestedArticlesCollector:
         print(f"Found {len(countries)} non-redirect structure pages on Meta-Wiki")
         return countries
 
+    def get_pages_content(self, titles: List[str]) -> Dict[str, str]:
+        """Get content of multiple Meta-Wiki pages in batches of 50."""
+        if not titles:
+            return {}
+
+        batch_size = 50
+        results: Dict[str, str] = {}
+
+        for i in range(0, len(titles), batch_size):
+            batch = titles[i:i + batch_size]
+
+            params = {
+                'action': 'query',
+                'prop': 'revisions',
+                'rvprop': 'content',
+                'rvslots': 'main',
+                'titles': '|'.join(batch)
+            }
+
+            data = self._make_request(params)
+
+            if 'query' not in data or 'pages' not in data['query']:
+                continue
+
+            for page in data['query']['pages']:
+                if 'missing' not in page and 'revisions' in page:
+                    revision = page['revisions'][0]
+                    if 'slots' in revision and 'main' in revision['slots']:
+                        results[page['title']] = revision['slots']['main']['content']
+
+        return results
+
     def collect_all_suggested_wikidata_ids(self) -> Dict[str, Set[str]]:
         """Collect all suggested Wikidata IDs from all country structure pages."""
         countries = self.get_suggested_countries()
@@ -146,18 +178,18 @@ class SuggestedArticlesCollector:
 
         print("Collecting suggested article Wikidata IDs from Meta-Wiki...")
 
-        for i, country in enumerate(countries, 1):
-            print(f"Processing {i}/{len(countries)}: {country}")
+        page_titles = [f"{STRUCTURE_PAGE_PREFIX}{country}" for country in countries]
+        all_contents = self.get_pages_content(page_titles)
 
+        for country in countries:
             page_title = f"{STRUCTURE_PAGE_PREFIX}{country}"
-            content = self.get_page_content(page_title)
+            content = all_contents.get(page_title, "")
 
             if content:
                 wikidata_ids = self.extract_wikidata_ids_from_content(content)
                 if wikidata_ids:
                     all_suggested_ids[country] = wikidata_ids
                     total_ids.update(wikidata_ids)
-                    print(f"  Found {len(wikidata_ids)} Wikidata IDs for {country}")
                 else:
                     print(f"  ⚠️  WARNING: No Wikidata IDs found for {country} - page may be empty or have formatting issues")
             else:
