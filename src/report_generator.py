@@ -221,7 +221,7 @@ class ReportGenerator:
 
         report = "== Konkursa kategorijas ==\n"
         report += "''Tikai raksti ar derīgām konkursa valstīm tiek iekļauti šajās kategorijās. "
-        report += f"No {len(articles_data)} kopējiem rakstiem, {len(valid_articles)} atbilst kritērijiem.''\n\n"
+        report += f"No {len(articles_data)} kopējiem rakstiem {len(valid_articles)} atbilst kritērijiem.''\n\n"
 
         # Lielākais devums konkursa gaitā - by contribution in bytes
         report += "=== Lielākais devums konkursa gaitā ===\n"
